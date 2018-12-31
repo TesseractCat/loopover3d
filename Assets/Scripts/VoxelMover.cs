@@ -46,9 +46,11 @@ public class VoxelMover : MonoBehaviour
 
     public string Base64MoveEncode = "";
 
+    [FormerlySerializedAs("movesDisplay")]
     public Text MovesDisplay;
+    [FormerlySerializedAs("MPSDisplay")]
     public Text MpsDisplay;
-
+    [FormerlySerializedAs("timeDisplay")]
     public Text TimeDisplay;
 
     private void Start()

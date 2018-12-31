@@ -4,12 +4,12 @@ using UnityEngine.Serialization;
 public class RotateCube : MonoBehaviour
 {
     [SerializeField] [FormerlySerializedAs("mouseSensitivity")]
-    // ReSharper disable once ConvertToConstant.Local
-    private readonly float _mouseSensitivity = 1f;
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private float _mouseSensitivity = 1f;
 
     [SerializeField] [FormerlySerializedAs("scrollWheelSensitivity")]
-    // ReSharper disable once ConvertToConstant.Local
-    private readonly float _scrollWheelSensitivity = 1f;
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private float _scrollWheelSensitivity = 1f;
 
     private Vector3 _lastPos = Vector3.zero;
 
