@@ -1,29 +1,32 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class VoxelMover : MonoBehaviour {
-
-    public GameObject VoxelHighlighter;
+    [SerializeField, FormerlySerializedAs("VoxelHighlighter")]
+    private GameObject _voxelHighlighter = default(GameObject);
     public Text timeDisplay;
     public Text movesDisplay;
     public Text MPSDisplay;
-    public Text timerButtonText;
-    float cubeSize;
+    [SerializeField, FormerlySerializedAs("timerButtonText")]
+    private Text _timerButtonText = default(Text);
+    private float _cubeSize;
 
-    public Toggle sliceToggle;
-    bool alternateSliceDir = false;
+    [SerializeField, FormerlySerializedAs("sliceToggle")]
+    private Toggle _sliceToggle = default(Toggle);
+    private bool _alternateSliceDir = false;
 
-    Vector3 newPos;
-    Vector3 newNorm;
-    Vector3 highlightedVoxel;
+    private Vector3 _newPos;
+    private Vector3 _newNorm;
+    private Vector3 _highlightedVoxel;
 
-    bool doTiming = false;
-    float startTime = 0;
-    int moves = 0;
+    private bool _doTiming = false;
+    private float _startTime = 0;
+    private int _moves = 0;
 
-    public int amountCut = 0;
-    Vector3 currentCutDir = Vector3.zero;
+    public int AmountCut = 0;
+    private Vector3 _currentCutDir = Vector3.zero;
 
     VoxelSpawner vs;
     Vector3[] directionArray = new[]
@@ -44,11 +47,11 @@ public class VoxelMover : MonoBehaviour {
     }
 
     void Update () {
-        if (doTiming)
+        if (_doTiming)
         {
-            timeDisplay.text = "Time: " + (Time.time - startTime).ToString();
-            movesDisplay.text = "Moves: " + (moves).ToString();
-            MPSDisplay.text = "MPS: " + (moves/ (Time.time - startTime)).ToString();
+            timeDisplay.text = "Time: " + (Time.time - _startTime).ToString();
+            movesDisplay.text = "Moves: " + (_moves).ToString();
+            MPSDisplay.text = "MPS: " + (_moves/ (Time.time - _startTime)).ToString();
         }
 
         RaycastHit hit;
@@ -57,27 +60,27 @@ public class VoxelMover : MonoBehaviour {
         if (Physics.Raycast(ray, out hit)) {
             if (hit.transform.tag == "Voxel")
             {
-                newPos = hit.transform.position;
-                newNorm = hit.normal;
-                highlightedVoxel = hit.transform.localPosition;
-                VoxelHighlighter.SetActive(true);
+                _newPos = hit.transform.position;
+                _newNorm = hit.normal;
+                _highlightedVoxel = hit.transform.localPosition;
+                _voxelHighlighter.SetActive(true);
             } else
             {
-                VoxelHighlighter.SetActive(false);
+                _voxelHighlighter.SetActive(false);
             }
         } else
         {
-            VoxelHighlighter.SetActive(false);
+            _voxelHighlighter.SetActive(false);
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            alternateSliceDir = !alternateSliceDir;
+            _alternateSliceDir = !_alternateSliceDir;
         }
 
-        if (VoxelHighlighter.activeSelf && Input.GetMouseButtonDown(0))
+        if (_voxelHighlighter.activeSelf && Input.GetMouseButtonDown(0))
         {
-            cubeSize = vs.cubeSize;
+            _cubeSize = vs.cubeSize;
             for (int c = 0; c < transform.childCount; c++)
             {
                 if (transform.GetChild(c).tag == "Moved")
@@ -87,17 +90,17 @@ public class VoxelMover : MonoBehaviour {
                 }
             }
 
-            if (doTiming == false)
+            if (_doTiming == false)
             {
-                base64MoveEncode = Base64Encode((int)cubeSize);
-                timerButtonText.text = "Stop Timer";
-                startTime = Time.time;
-                doTiming = true;
-                moves = 0;
+                base64MoveEncode = Base64Encode((int)_cubeSize);
+                _timerButtonText.text = "Stop Timer";
+                _startTime = Time.time;
+                _doTiming = true;
+                _moves = 0;
             }
             
-            Vector3 localNorm = transform.InverseTransformDirection(newNorm);
-            moves += 1;
+            Vector3 localNorm = transform.InverseTransformDirection(_newNorm);
+            _moves += 1;
 
             bool tempReturn = true;
             for (int d = 0; d < directionArray.Length; d++)
@@ -113,16 +116,16 @@ public class VoxelMover : MonoBehaviour {
                 return;
             }
 
-            if (!sliceToggle.isOn)
+            if (!_sliceToggle.isOn)
             {
-                PushRow(highlightedVoxel, -localNorm, true);
+                PushRow(_highlightedVoxel, -localNorm, true);
             } else
             {
-                PushSlice(highlightedVoxel, -localNorm);
+                PushSlice(_highlightedVoxel, -localNorm);
             }
 
             //Base64MoveEncoder
-            base64MoveEncode += Base64Encode((int)highlightedVoxel.x) + Base64Encode((int)highlightedVoxel.y) + Base64Encode((int)highlightedVoxel.z);
+            base64MoveEncode += Base64Encode((int)_highlightedVoxel.x) + Base64Encode((int)_highlightedVoxel.y) + Base64Encode((int)_highlightedVoxel.z);
             for (int i = 0; i < directionArray.Length; i++)
             {
                 if (directionArray[i] == -localNorm)
@@ -133,11 +136,11 @@ public class VoxelMover : MonoBehaviour {
             
 
             bool stopTimer = true;
-            for (int xi = 0; xi < cubeSize; xi++)
+            for (int xi = 0; xi < _cubeSize; xi++)
             {
-                for (int yi = 0; yi < cubeSize; yi++)
+                for (int yi = 0; yi < _cubeSize; yi++)
                 {
-                    for (int zi = 0; zi < cubeSize; zi++)
+                    for (int zi = 0; zi < _cubeSize; zi++)
                     {
                         if (vs.voxelArray[xi, yi, zi].Number != vs.correctNumberArray[xi, yi, zi])
                         {
@@ -149,21 +152,21 @@ public class VoxelMover : MonoBehaviour {
             if (stopTimer)
             {
                 Restart();
-                timerButtonText.text = "Cube Solved!";
+                _timerButtonText.text = "Cube Solved!";
             }
         }
 
         //Hardcoded values uwu
-        if (!sliceToggle.isOn)
+        if (!_sliceToggle.isOn)
         {
-            VoxelHighlighter.transform.position = Vector3.Lerp(VoxelHighlighter.transform.position, newPos, Time.deltaTime * 30);
-            VoxelHighlighter.transform.up = Vector3.Lerp(VoxelHighlighter.transform.up, newNorm, Time.deltaTime * 50);
+            _voxelHighlighter.transform.position = Vector3.Lerp(_voxelHighlighter.transform.position, _newPos, Time.deltaTime * 30);
+            _voxelHighlighter.transform.up = Vector3.Lerp(_voxelHighlighter.transform.up, _newNorm, Time.deltaTime * 50);
         } else
         {
-            VoxelHighlighter.transform.position = Vector3.Lerp(VoxelHighlighter.transform.position, newPos, Time.deltaTime * 30);
+            _voxelHighlighter.transform.position = Vector3.Lerp(_voxelHighlighter.transform.position, _newPos, Time.deltaTime * 30);
             //VoxelHighlighter.transform.up = Vector3.Lerp(VoxelHighlighter.transform.up, newNorm, Time.deltaTime * 50);
 
-            Vector3 localNorm = transform.InverseTransformDirection(newNorm);
+            Vector3 localNorm = transform.InverseTransformDirection(_newNorm);
             Vector3 highlightUp = Vector3.zero;
             Vector3 highlightRight = Vector3.zero;
             if (Mathf.RoundToInt(vec3Abs(localNorm).x) == 1)
@@ -182,16 +185,16 @@ public class VoxelMover : MonoBehaviour {
                 highlightRight = new Vector3(1, 0, 0);
             }
 
-            if (!alternateSliceDir)
+            if (!_alternateSliceDir)
             {
-                VoxelHighlighter.transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(VoxelHighlighter.transform.forward, transform.TransformDirection(highlightRight), Time.deltaTime * 50),
-                    Vector3.Lerp(VoxelHighlighter.transform.up, newNorm, Time.deltaTime * 50));
+                _voxelHighlighter.transform.rotation = Quaternion.LookRotation(
+                    Vector3.Lerp(_voxelHighlighter.transform.forward, transform.TransformDirection(highlightRight), Time.deltaTime * 50),
+                    Vector3.Lerp(_voxelHighlighter.transform.up, _newNorm, Time.deltaTime * 50));
             } else
             {
-                VoxelHighlighter.transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(VoxelHighlighter.transform.forward, transform.TransformDirection(highlightUp), Time.deltaTime * 50),
-                    Vector3.Lerp(VoxelHighlighter.transform.up, newNorm, Time.deltaTime * 50));
+                _voxelHighlighter.transform.rotation = Quaternion.LookRotation(
+                    Vector3.Lerp(_voxelHighlighter.transform.forward, transform.TransformDirection(highlightUp), Time.deltaTime * 50),
+                    Vector3.Lerp(_voxelHighlighter.transform.up, _newNorm, Time.deltaTime * 50));
             }
 
         }
@@ -199,37 +202,37 @@ public class VoxelMover : MonoBehaviour {
 
     public void Restart()
     {
-        doTiming = false;
-        moves = 0;
-        timerButtonText.text = "Timer Stopped";
+        _doTiming = false;
+        _moves = 0;
+        _timerButtonText.text = "Timer Stopped";
     }
 
     public void ToggleSliceMarkers()
     {
-        if (sliceToggle.isOn)
+        if (_sliceToggle.isOn)
         {
-            VoxelHighlighter.transform.Find("SliceMarkers").gameObject.SetActive(true);
+            _voxelHighlighter.transform.Find("SliceMarkers").gameObject.SetActive(true);
         } else
         {
-            VoxelHighlighter.transform.Find("SliceMarkers").gameObject.SetActive(false);
+            _voxelHighlighter.transform.Find("SliceMarkers").gameObject.SetActive(false);
         }
     }
 
     public void CutForward(Vector3 dir)
     {
-        currentCutDir = dir;
-        cubeSize = vs.cubeSize;
-        if (amountCut == ((int)cubeSize - 1))
+        _currentCutDir = dir;
+        _cubeSize = vs.cubeSize;
+        if (AmountCut == ((int)_cubeSize - 1))
         {
             return;
         }
 
         List<SetVoxelProperties> objectsToDeactivate = new List<SetVoxelProperties>();
-        for (int xi = 0; xi < cubeSize; xi++)
+        for (int xi = 0; xi < _cubeSize; xi++)
         {
-            for (int yi = 0; yi < cubeSize; yi++)
+            for (int yi = 0; yi < _cubeSize; yi++)
             {
-                for (int zi = 0; zi < cubeSize; zi++)
+                for (int zi = 0; zi < _cubeSize; zi++)
                 {
                     SetVoxelProperties beforeVoxel = null;
                     try
@@ -256,23 +259,23 @@ public class VoxelMover : MonoBehaviour {
             Obj.Redraw();
         });
 
-        amountCut += 1;
+        AmountCut += 1;
     }
 
     public void CutBackward(Vector3 dir, bool resetNodulesOnZero)
     {
-        if (amountCut == 0)
+        if (AmountCut == 0)
         {
             return;
         }
 
 
         List<SetVoxelProperties> objectsToActivate = new List<SetVoxelProperties>();
-        for (int xi = 0; xi < cubeSize; xi++)
+        for (int xi = 0; xi < _cubeSize; xi++)
         {
-            for (int yi = 0; yi < cubeSize; yi++)
+            for (int yi = 0; yi < _cubeSize; yi++)
             {
-                for (int zi = 0; zi < cubeSize; zi++)
+                for (int zi = 0; zi < _cubeSize; zi++)
                 {
                     SetVoxelProperties beforeVoxel = null;
                     try
@@ -297,9 +300,9 @@ public class VoxelMover : MonoBehaviour {
             Obj.Redraw();
         });
 
-        amountCut -= 1;
+        AmountCut -= 1;
 
-        if (amountCut == 0 && resetNodulesOnZero)
+        if (AmountCut == 0 && resetNodulesOnZero)
         {
             GetComponent<VoxelSpawner>().nodules.ForEach((n) =>
             {
@@ -310,9 +313,9 @@ public class VoxelMover : MonoBehaviour {
 
     void PushRow(Vector3 touched, Vector3 dir, bool fancy)
     {
-        cubeSize = vs.cubeSize;
+        _cubeSize = vs.cubeSize;
 
-        for (int i = 0; i < cubeSize + 1; i++)
+        for (int i = 0; i < _cubeSize + 1; i++)
         {
             if (FindVoxelByPos(touched - (dir * i)) == null)
             {
@@ -322,13 +325,13 @@ public class VoxelMover : MonoBehaviour {
         }
 
         List<int> tempNumArray = new List<int>();
-        for (int i = 0; i < cubeSize; i++)
+        for (int i = 0; i < _cubeSize; i++)
         {
             Vector3 pos = (touched + (dir * i));
             tempNumArray.Add(vs.voxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].Number);
             //Debug.Log(tempNumArray[tempNumArray.Count - 1]);
         }
-        for (int i = 0; i < cubeSize; i++)
+        for (int i = 0; i < _cubeSize; i++)
         {
             Vector3 pos = (touched + (dir * i));
             if (i == 0)
@@ -372,7 +375,7 @@ public class VoxelMover : MonoBehaviour {
 
         Vector3 sliceDir = Vector3.zero;
 
-        if (!alternateSliceDir)
+        if (!_alternateSliceDir)
         {
             sliceDir = highlightUp;
         }
@@ -381,20 +384,20 @@ public class VoxelMover : MonoBehaviour {
             sliceDir = highlightRight;
         }
 
-        cubeSize = vs.cubeSize;
+        _cubeSize = vs.cubeSize;
 
-        for (int i = 0; i < cubeSize + 1; i++)
+        for (int i = 0; i < _cubeSize + 1; i++)
         {
-            if (FindVoxelByPos(highlightedVoxel - (sliceDir * i)) == null)
+            if (FindVoxelByPos(_highlightedVoxel - (sliceDir * i)) == null)
             {
-                highlightedVoxel = highlightedVoxel - (sliceDir * (i - 1));
+                _highlightedVoxel = _highlightedVoxel - (sliceDir * (i - 1));
                 break;
             }
         }
 
-        for (int i = 0; i < cubeSize; i++)
+        for (int i = 0; i < _cubeSize; i++)
         {
-            PushRow(highlightedVoxel + sliceDir * i, dir, true);
+            PushRow(_highlightedVoxel + sliceDir * i, dir, true);
         }
     }
 
@@ -430,7 +433,7 @@ public class VoxelMover : MonoBehaviour {
 
     public void Scramble()
     {
-        if (amountCut != 0)
+        if (AmountCut != 0)
         {
             return;
         }

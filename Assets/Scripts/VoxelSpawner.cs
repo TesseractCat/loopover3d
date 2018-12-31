@@ -101,7 +101,7 @@ public class VoxelSpawner : MonoBehaviour {
                 Destroy(transform.GetChild(c).gameObject);
             }
         }
-        GetComponent<VoxelMover>().amountCut = 0;
+        GetComponent<VoxelMover>().AmountCut = 0;
         Start();
     }
 
