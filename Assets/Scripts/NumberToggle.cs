@@ -10,22 +10,25 @@ public class NumberToggle : MonoBehaviour
         NumberEnabled = !NumberEnabled;
         if (NumberEnabled)
         {
-            SetVoxelProperties[] voxels = FindObjectsOfType<SetVoxelProperties>();
-            new List<SetVoxelProperties>(voxels).ForEach((System.Action<SetVoxelProperties>)((v) =>
-            {
-                v.ShowNumber = true;
-                v.Redraw();
-            }));
+            var voxels = FindObjectsOfType<SetVoxelProperties>();
+            new List<SetVoxelProperties>(voxels).ForEach(
+                v =>
+                {
+                    v.ShowNumber = true;
+                    v.Redraw();
+                }
+            );
         }
         else
         {
-            SetVoxelProperties[] voxels = FindObjectsOfType<SetVoxelProperties>();
-            new List<SetVoxelProperties>(voxels).ForEach((System.Action<SetVoxelProperties>)((v) =>
-            {
-                v.ShowNumber = false;
-                v.Redraw();
-            }));
+            var voxels = FindObjectsOfType<SetVoxelProperties>();
+            new List<SetVoxelProperties>(voxels).ForEach(
+                v =>
+                {
+                    v.ShowNumber = false;
+                    v.Redraw();
+                }
+            );
         }
     }
-
 }

@@ -1,35 +1,37 @@
 ﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-public class SetVoxelProperties : MonoBehaviour {
+public class SetVoxelProperties : MonoBehaviour
+{
+    [SerializeField] [FormerlySerializedAs("colorBrightness")]
+    private readonly float _colorBrightness = 0.1f;
 
     private VoxelSpawner _cube;
     private MaterialPropertyBlock _propBlock;
     private Renderer _renderer;
     private Color color = Color.black;
-    [SerializeField, FormerlySerializedAs("colorBrightness")]
-    private float _colorBrightness = 0.1f;
-    [HideInInspector]
-    public int Number = 1;
-    [HideInInspector]
-    public bool Transparent = false;
-    [HideInInspector]
-    public bool ShowNumber = true;
 
-    void Awake()
+    [HideInInspector] public int Number = 1;
+    [HideInInspector] public bool ShowNumber = true;
+    [HideInInspector] public bool Transparent = false;
+
+    private void Awake()
     {
         ShowNumber = FindObjectOfType<NumberToggle>().NumberEnabled;
         _cube = FindObjectOfType<VoxelSpawner>();
         _renderer = GetComponent<Renderer>();
         _propBlock = new MaterialPropertyBlock();
     }
-    
-	public void SetColor(Color newColor)
+
+    public void SetColor(Color newColor)
     {
         color = newColor;
         _propBlock.SetColor("_Color", color);
         _propBlock.SetColor("_EmissionColor", NumberToColor(Number));
-        _propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>(Number.ToString()));
+        _propBlock.SetTexture(
+            "_MainTex",
+            Resources.Load<Texture2D>(Number.ToString())
+        );
         _renderer.SetPropertyBlock(_propBlock);
     }
 
@@ -42,12 +44,16 @@ public class SetVoxelProperties : MonoBehaviour {
             _propBlock.SetColor("_EmissionColor", NumberToColor(newNumber));
             _propBlock.SetColor("_FirstOutlineColor", OutlineColor());
             if (ShowNumber)
-            {
-                _propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>(Number.ToString()));
-            } else
-            {
-                _propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>("blank"));
-            }
+                _propBlock.SetTexture(
+                    "_MainTex",
+                    Resources.Load<Texture2D>(Number.ToString())
+                );
+            else
+                _propBlock.SetTexture(
+                    "_MainTex",
+                    Resources.Load<Texture2D>("blank")
+                );
+
             _renderer.SetPropertyBlock(_propBlock);
         }
     }
@@ -57,7 +63,10 @@ public class SetVoxelProperties : MonoBehaviour {
         _propBlock.SetColor("_Color", NumberToColor(Number));
         _propBlock.SetColor("_EmissionColor", NumberToColor(Number));
         _propBlock.SetColor("_FirstOutlineColor", OutlineColor());
-        _propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>(displayNumber.ToString()));
+        _propBlock.SetTexture(
+            "_MainTex",
+            Resources.Load<Texture2D>(displayNumber.ToString())
+        );
         _renderer.SetPropertyBlock(_propBlock);
     }
 
@@ -66,40 +75,38 @@ public class SetVoxelProperties : MonoBehaviour {
         SetNumber(Number, true);
     }
 
-    Color NumberToColor(int num)
+    private Color NumberToColor(int num)
     {
-        int numVoxel = 0;
+        var numVoxel = 0;
         for (float xi = 0; xi < _cube.CubeSize; xi++)
+        for (float yi = 0; yi < _cube.CubeSize; yi++)
+        for (float zi = 0; zi < _cube.CubeSize; zi++)
         {
-            for (float yi = 0; yi < _cube.CubeSize; yi++)
+            numVoxel += 1;
+            if (num == numVoxel)
             {
-                for (float zi = 0; zi < _cube.CubeSize; zi++)
-                {
-                    numVoxel += 1;
-                    if (num == numVoxel)
-                    {
-                        if (!Transparent)
-                        {
-                            return new Color(xi / _cube.CubeSize + _colorBrightness, yi / _cube.CubeSize + _colorBrightness, zi / _cube.CubeSize + _colorBrightness, 1f);
-                        } else
-                        {
-                            return new Color(xi / _cube.CubeSize + _colorBrightness, yi / _cube.CubeSize + _colorBrightness, zi / _cube.CubeSize + _colorBrightness, 0.025f);
-                        }
-                    }
-                }
+                if (!Transparent)
+                    return new Color(
+                        xi / _cube.CubeSize + _colorBrightness,
+                        yi / _cube.CubeSize + _colorBrightness,
+                        zi / _cube.CubeSize + _colorBrightness,
+                        1f
+                    );
+                return new Color(
+                    xi / _cube.CubeSize + _colorBrightness,
+                    yi / _cube.CubeSize + _colorBrightness,
+                    zi / _cube.CubeSize + _colorBrightness,
+                    0.025f
+                );
             }
         }
+
         return Color.black;
     }
 
-    Color OutlineColor()
+    private Color OutlineColor()
     {
-        if (Transparent)
-        {
-            return new Color(0, 0, 0, 0);
-        } else
-        {
-            return new Color(0, 0, 0, 1);
-        }
+        if (Transparent) return new Color(0, 0, 0, 0);
+        return new Color(0, 0, 0, 1);
     }
 }

@@ -1,22 +1,25 @@
 ﻿using UnityEngine;
 
-public class DisableTextOnInvisible : MonoBehaviour {
+public class DisableTextOnInvisible : MonoBehaviour
+{
     private VoxelSpawner _cube;
 
-    void Start()
+    private void Start()
     {
         _cube = FindObjectOfType<VoxelSpawner>();
     }
 
-    void Update () {
-        
-        Vector3 realPos = transform.parent.parent.localPosition - new Vector3(-(_cube.CubeSize / 2f) + 0.5f, -(_cube.CubeSize / 2f) + 0.5f, -(_cube.CubeSize / 2f) + 0.5f);
+    private void Update()
+    {
+        var realPos = transform.parent.parent.localPosition -
+                      new Vector3(
+                          -(_cube.CubeSize / 2f) + 0.5f,
+                          -(_cube.CubeSize / 2f) + 0.5f,
+                          -(_cube.CubeSize / 2f) + 0.5f
+                      );
         if (realPos.x * realPos.y * realPos.z == 0)
-        {
             GetComponent<MeshRenderer>().enabled = true;
-        } else
-        {
+        else
             GetComponent<MeshRenderer>().enabled = false;
-        }
-	}
+    }
 }
