@@ -3,15 +3,24 @@ using UnityEngine.Serialization;
 
 public class RotateCube : MonoBehaviour
 {
-    [SerializeField] [FormerlySerializedAs("mouseSensitivity")]
+    [SerializeField]
+    [FormerlySerializedAs("mouseSensitivity")]
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     private float _mouseSensitivity = 1f;
 
-    [SerializeField] [FormerlySerializedAs("scrollWheelSensitivity")]
+    [SerializeField]
+    [FormerlySerializedAs("scrollWheelSensitivity")]
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     private float _scrollWheelSensitivity = 1f;
 
+    private VoxelSpawner _voxelSpawner;
     private Vector3 _lastPos = Vector3.zero;
+
+    private void Start()
+    {
+        _voxelSpawner = GetComponent<VoxelSpawner>();
+    }
+
 
     private void Update()
     {
@@ -40,5 +49,17 @@ public class RotateCube : MonoBehaviour
             );
 
         _lastPos = Input.mousePosition;
+
+        for (int i = 0; i < 6; i++)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+            {
+                Vector3 vector = Vector3.zero;
+                vector[(i + 2) % 3] = i < 3 ? 1 : -1;
+                transform.forward = vector;
+                transform.position = Vector3.zero;
+                _voxelSpawner.CenterCube();
+            }
+        }
     }
 }

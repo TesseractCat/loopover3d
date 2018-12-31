@@ -136,6 +136,12 @@ public class VoxelSpawner : MonoBehaviour
             1f / CubeSize * 2.5f,
             1f / CubeSize * 2.5f
         );
+        CenterCube();
+        GetComponent<VoxelMover>().Base64MoveEncode = "";
+    }
+
+    public  void CenterCube()
+    {
         var center = new GameObject();
         center.transform.parent = transform;
         center.transform.localPosition = new Vector3(
@@ -146,8 +152,6 @@ public class VoxelSpawner : MonoBehaviour
         center.transform.parent = null;
         transform.position = -center.transform.position;
         Destroy(center);
-
-        GetComponent<VoxelMover>().Base64MoveEncode = "";
     }
 
     public void ResetCube()
