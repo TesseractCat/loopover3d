@@ -78,8 +78,8 @@ public class VoxelSpawner : MonoBehaviour {
 
     public void ResetCube()
     {
-        GetComponent<VoxelMover>().timeDisplay.text = "Time: 0";
-        GetComponent<VoxelMover>().movesDisplay.text = "Moves: 0";
+        GetComponent<VoxelMover>().TimeDisplay.text = "Time: 0";
+        GetComponent<VoxelMover>().MovesDisplay.text = "Moves: 0";
         GetComponent<VoxelMover>().MPSDisplay.text = "MPS: 0";
         GetComponent<VoxelMover>().Restart();
         transform.localScale = Vector3.one;

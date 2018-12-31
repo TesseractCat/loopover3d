@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class VoxelMover : MonoBehaviour {
     [SerializeField, FormerlySerializedAs("VoxelHighlighter")]
     private GameObject _voxelHighlighter = default(GameObject);
-    public Text timeDisplay;
-    public Text movesDisplay;
+    public Text TimeDisplay;
+    public Text MovesDisplay;
     public Text MPSDisplay;
     [SerializeField, FormerlySerializedAs("timerButtonText")]
     private Text _timerButtonText = default(Text);
@@ -49,8 +49,8 @@ public class VoxelMover : MonoBehaviour {
     void Update () {
         if (_doTiming)
         {
-            timeDisplay.text = "Time: " + (Time.time - _startTime).ToString();
-            movesDisplay.text = "Moves: " + (_moves).ToString();
+            TimeDisplay.text = "Time: " + (Time.time - _startTime).ToString();
+            MovesDisplay.text = "Moves: " + (_moves).ToString();
             MPSDisplay.text = "MPS: " + (_moves/ (Time.time - _startTime)).ToString();
         }
 
