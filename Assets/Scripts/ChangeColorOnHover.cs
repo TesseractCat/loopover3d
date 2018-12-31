@@ -1,17 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ChangeColorOnHover : MonoBehaviour {
 
-    Color startColor;
-    public Color toColor;
-    Color lerpToColor;
+    private Color _startColor;
+    public Color ToColor;
+    private Color _lerpToColor;
 
 	// Use this for initialization
 	void Start () {
         GetComponent<MeshRenderer>().material = new Material(GetComponent<MeshRenderer>().material);
-        startColor = GetComponent<MeshRenderer>().material.GetColor("_Color");
+        _startColor = GetComponent<MeshRenderer>().material.GetColor("_Color");
     }
 	
 	// Update is called once per frame
@@ -23,17 +21,17 @@ public class ChangeColorOnHover : MonoBehaviour {
         {
             if (hit.transform.gameObject.GetInstanceID() == gameObject.GetInstanceID())
             {
-                lerpToColor = toColor;
+                _lerpToColor = ToColor;
             }
             else
             {
-                lerpToColor = startColor;
+                _lerpToColor = _startColor;
             }
         } else
         {
-            lerpToColor = startColor;
+            _lerpToColor = _startColor;
         }
 
-        GetComponent<MeshRenderer>().material.SetColor("_Color", Color.Lerp(GetComponent<MeshRenderer>().material.color, lerpToColor, Time.deltaTime * 15));
+        GetComponent<MeshRenderer>().material.SetColor("_Color", Color.Lerp(GetComponent<MeshRenderer>().material.color, _lerpToColor, Time.deltaTime * 15));
     }
 }

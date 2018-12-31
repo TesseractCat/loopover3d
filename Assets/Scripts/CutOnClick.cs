@@ -1,15 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CutOnClick : MonoBehaviour {
-
-    public VoxelMover cube;
-    public bool forward = true;
+    private VoxelMover _cube;
+    [SerializeField, FormerlySerializedAs("forward")]
+    private bool _forward = true;
 
     void Start()
     {
-        cube = FindObjectOfType<VoxelMover>();
+        _cube = FindObjectOfType<VoxelMover>();
     }
 
     void Update()
@@ -21,7 +20,7 @@ public class CutOnClick : MonoBehaviour {
         {
             if (hit.transform.gameObject.GetInstanceID() == gameObject.GetInstanceID() && Input.GetMouseButtonDown(0))
             {
-                if (forward)
+                if (_forward)
                 {
                     GameObject[] nodules = GameObject.FindGameObjectsWithTag("Nodule");
                     for (int n = 0; n < nodules.Length; n++)
@@ -32,10 +31,10 @@ public class CutOnClick : MonoBehaviour {
                         }
                     }
 
-                    cube.CutForward(cube.transform.InverseTransformDirection(transform.forward));
+                    _cube.CutForward(_cube.transform.InverseTransformDirection(transform.forward));
                 } else
                 {
-                    cube.CutBackward(cube.transform.InverseTransformDirection(-transform.forward), true);
+                    _cube.CutBackward(_cube.transform.InverseTransformDirection(-transform.forward), true);
                 }
             }
         }
