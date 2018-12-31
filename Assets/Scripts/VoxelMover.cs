@@ -5,16 +5,7 @@ using UnityEngine.UI;
 
 public class VoxelMover : MonoBehaviour
 {
-    [SerializeField] [FormerlySerializedAs("sliceToggle")]
-    private readonly Toggle _sliceToggle = default(Toggle);
-
-    [SerializeField] [FormerlySerializedAs("timerButtonText")]
-    private readonly Text _timerButtonText = default(Text);
-
-    [SerializeField] [FormerlySerializedAs("VoxelHighlighter")]
-    private readonly GameObject _voxelHighlighter = default(GameObject);
-
-    private readonly Vector3[] directionArray =
+    private readonly Vector3[] _directionArray =
     {
         new Vector3(1, 0, 0),
         new Vector3(-1, 0, 0),
@@ -27,7 +18,6 @@ public class VoxelMover : MonoBehaviour
     private bool _alternateSliceDir;
 
     private float _cubeSize;
-    private Vector3 _currentCutDir = Vector3.zero;
 
     private bool _doTiming;
     private Vector3 _highlightedVoxel;
@@ -36,22 +26,34 @@ public class VoxelMover : MonoBehaviour
 
     private Vector3 _newPos;
 
+    [SerializeField] [FormerlySerializedAs("sliceToggle")]
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private Toggle _sliceToggle = default(Toggle);
+
     private float _startTime;
+
+    [SerializeField] [FormerlySerializedAs("timerButtonText")]
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private Text _timerButtonText = default(Text);
+
+    [SerializeField] [FormerlySerializedAs("VoxelHighlighter")]
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private GameObject _voxelHighlighter = default(GameObject);
+
+    private VoxelSpawner _vs;
 
     public int AmountCut;
 
-    public string base64MoveEncode = "";
+    public string Base64MoveEncode = "";
 
     public Text MovesDisplay;
-    public Text MPSDisplay;
+    public Text MpsDisplay;
 
     public Text TimeDisplay;
 
-    private VoxelSpawner vs;
-
     private void Start()
     {
-        vs = FindObjectOfType<VoxelSpawner>();
+        _vs = FindObjectOfType<VoxelSpawner>();
     }
 
     private void Update()
@@ -60,7 +62,7 @@ public class VoxelMover : MonoBehaviour
         {
             TimeDisplay.text = "Time: " + (Time.time - _startTime);
             MovesDisplay.text = "Moves: " + _moves;
-            MPSDisplay.text =
+            MpsDisplay.text =
                 "MPS: " + _moves / (Time.time - _startTime);
         }
 
@@ -91,7 +93,7 @@ public class VoxelMover : MonoBehaviour
 
         if (_voxelHighlighter.activeSelf && Input.GetMouseButtonDown(0))
         {
-            _cubeSize = vs.CubeSize;
+            _cubeSize = _vs.CubeSize;
             for (var c = 0; c < transform.childCount; c++)
                 if (transform.GetChild(c).tag == "Moved")
                 {
@@ -101,7 +103,7 @@ public class VoxelMover : MonoBehaviour
 
             if (_doTiming == false)
             {
-                base64MoveEncode = Base64Encode((int) _cubeSize);
+                Base64MoveEncode = Base64Encode((int) _cubeSize);
                 _timerButtonText.text = "Stop Timer";
                 _startTime = Time.time;
                 _doTiming = true;
@@ -112,8 +114,8 @@ public class VoxelMover : MonoBehaviour
             _moves += 1;
 
             var tempReturn = true;
-            for (var d = 0; d < directionArray.Length; d++)
-                if (-localNorm == directionArray[d])
+            for (var d = 0; d < _directionArray.Length; d++)
+                if (-localNorm == _directionArray[d])
                     tempReturn = false;
 
             if (tempReturn)
@@ -128,20 +130,20 @@ public class VoxelMover : MonoBehaviour
                 PushSlice(_highlightedVoxel, -localNorm);
 
             //Base64MoveEncoder
-            base64MoveEncode += Base64Encode((int) _highlightedVoxel.x) +
+            Base64MoveEncode += Base64Encode((int) _highlightedVoxel.x) +
                                 Base64Encode((int) _highlightedVoxel.y) +
                                 Base64Encode((int) _highlightedVoxel.z);
-            for (var i = 0; i < directionArray.Length; i++)
-                if (directionArray[i] == -localNorm)
-                    base64MoveEncode += Base64Encode(i);
+            for (var i = 0; i < _directionArray.Length; i++)
+                if (_directionArray[i] == -localNorm)
+                    Base64MoveEncode += Base64Encode(i);
 
 
             var stopTimer = true;
             for (var xi = 0; xi < _cubeSize; xi++)
             for (var yi = 0; yi < _cubeSize; yi++)
             for (var zi = 0; zi < _cubeSize; zi++)
-                if (vs.VoxelArray[xi, yi, zi].Number !=
-                    vs.CorrectNumberArray[xi, yi, zi])
+                if (_vs.VoxelArray[xi, yi, zi].Number !=
+                    _vs.CorrectNumberArray[xi, yi, zi])
                     stopTimer = false;
 
             if (stopTimer)
@@ -177,17 +179,17 @@ public class VoxelMover : MonoBehaviour
             var localNorm = transform.InverseTransformDirection(_newNorm);
             var highlightUp = Vector3.zero;
             var highlightRight = Vector3.zero;
-            if (Mathf.RoundToInt(vec3Abs(localNorm).x) == 1)
+            if (Mathf.RoundToInt(Vec3Abs(localNorm).x) == 1)
             {
                 highlightUp = new Vector3(0, 1, 0);
                 highlightRight = new Vector3(0, 0, 1);
             }
-            else if (Mathf.RoundToInt(vec3Abs(localNorm).y) == 1)
+            else if (Mathf.RoundToInt(Vec3Abs(localNorm).y) == 1)
             {
                 highlightUp = new Vector3(0, 0, 1);
                 highlightRight = new Vector3(1, 0, 0);
             }
-            else if (Mathf.RoundToInt(vec3Abs(localNorm).z) == 1)
+            else if (Mathf.RoundToInt(Vec3Abs(localNorm).z) == 1)
             {
                 highlightUp = new Vector3(0, 1, 0);
                 highlightRight = new Vector3(1, 0, 0);
@@ -231,18 +233,13 @@ public class VoxelMover : MonoBehaviour
 
     public void ToggleSliceMarkers()
     {
-        if (_sliceToggle.isOn)
-            _voxelHighlighter.transform.Find("SliceMarkers")
-                .gameObject.SetActive(true);
-        else
-            _voxelHighlighter.transform.Find("SliceMarkers")
-                .gameObject.SetActive(false);
+        _voxelHighlighter.transform.Find("SliceMarkers")
+            .gameObject.SetActive(_sliceToggle.isOn);
     }
 
     public void CutForward(Vector3 dir)
     {
-        _currentCutDir = dir;
-        _cubeSize = vs.CubeSize;
+        _cubeSize = _vs.CubeSize;
         if (AmountCut == (int) _cubeSize - 1) return;
 
         var objectsToDeactivate =
@@ -251,29 +248,30 @@ public class VoxelMover : MonoBehaviour
         for (var yi = 0; yi < _cubeSize; yi++)
         for (var zi = 0; zi < _cubeSize; zi++)
         {
-            SetVoxelProperties beforeVoxel = null;
+            SetVoxelProperties beforeVoxel;
             try
             {
-                beforeVoxel = vs.VoxelArray[xi - Mathf.RoundToInt(dir.x),
+                beforeVoxel = _vs.VoxelArray[
+                    xi - Mathf.RoundToInt(dir.x),
                     yi - Mathf.RoundToInt(dir.y),
                     zi - Mathf.RoundToInt(dir.z)];
             }
             catch
             {
-                objectsToDeactivate.Add(vs.VoxelArray[xi, yi, zi]);
+                objectsToDeactivate.Add(_vs.VoxelArray[xi, yi, zi]);
                 continue;
             }
 
             if (beforeVoxel.Transparent)
-                objectsToDeactivate.Add(vs.VoxelArray[xi, yi, zi]);
+                objectsToDeactivate.Add(_vs.VoxelArray[xi, yi, zi]);
         }
 
         objectsToDeactivate.ForEach(
-            Obj =>
+            obj =>
             {
-                Obj.transform.parent.GetComponent<Collider>().enabled = false;
-                Obj.Transparent = true;
-                Obj.Redraw();
+                obj.transform.parent.GetComponent<Collider>().enabled = false;
+                obj.Transparent = true;
+                obj.Redraw();
             }
         );
 
@@ -293,7 +291,7 @@ public class VoxelMover : MonoBehaviour
             SetVoxelProperties beforeVoxel = null;
             try
             {
-                beforeVoxel = vs.VoxelArray[xi + Mathf.RoundToInt(dir.x),
+                beforeVoxel = _vs.VoxelArray[xi + Mathf.RoundToInt(dir.x),
                     yi + Mathf.RoundToInt(dir.y),
                     zi + Mathf.RoundToInt(dir.z)];
             }
@@ -303,15 +301,15 @@ public class VoxelMover : MonoBehaviour
             }
 
             if (!beforeVoxel.Transparent)
-                objectsToActivate.Add(vs.VoxelArray[xi, yi, zi]);
+                objectsToActivate.Add(_vs.VoxelArray[xi, yi, zi]);
         }
 
         objectsToActivate.ForEach(
-            Obj =>
+            obj =>
             {
-                Obj.transform.parent.GetComponent<Collider>().enabled = true;
-                Obj.Transparent = false;
-                Obj.Redraw();
+                obj.transform.parent.GetComponent<Collider>().enabled = true;
+                obj.Transparent = false;
+                obj.Redraw();
             }
         );
 
@@ -324,7 +322,7 @@ public class VoxelMover : MonoBehaviour
 
     private void PushRow(Vector3 touched, Vector3 dir, bool fancy)
     {
-        _cubeSize = vs.CubeSize;
+        _cubeSize = _vs.CubeSize;
 
         for (var i = 0; i < _cubeSize + 1; i++)
             if (FindVoxelByPos(touched - dir * i) == null)
@@ -338,7 +336,7 @@ public class VoxelMover : MonoBehaviour
         {
             var pos = touched + dir * i;
             tempNumArray.Add(
-                vs.VoxelArray[Mathf.RoundToInt(pos.x),
+                _vs.VoxelArray[Mathf.RoundToInt(pos.x),
                         Mathf.RoundToInt(pos.y),
                         Mathf.RoundToInt(pos.z)]
                     .Number
@@ -350,12 +348,12 @@ public class VoxelMover : MonoBehaviour
         {
             var pos = touched + dir * i;
             if (i == 0)
-                vs.VoxelArray[Mathf.RoundToInt(pos.x),
+                _vs.VoxelArray[Mathf.RoundToInt(pos.x),
                         Mathf.RoundToInt(pos.y),
                         Mathf.RoundToInt(pos.z)]
                     .SetNumber(tempNumArray[tempNumArray.Count - 1], fancy);
             else
-                vs.VoxelArray[Mathf.RoundToInt(pos.x),
+                _vs.VoxelArray[Mathf.RoundToInt(pos.x),
                         Mathf.RoundToInt(pos.y),
                         Mathf.RoundToInt(pos.z)]
                     .SetNumber(tempNumArray[i - 1], fancy);
@@ -371,17 +369,17 @@ public class VoxelMover : MonoBehaviour
         //HACKY
         var highlightUp = Vector3.zero;
         var highlightRight = Vector3.zero;
-        if (Mathf.RoundToInt(vec3Abs(dir).x) == 1)
+        if (Mathf.RoundToInt(Vec3Abs(dir).x) == 1)
         {
             highlightUp = new Vector3(0, 1, 0);
             highlightRight = new Vector3(0, 0, 1);
         }
-        else if (Mathf.RoundToInt(vec3Abs(dir).y) == 1)
+        else if (Mathf.RoundToInt(Vec3Abs(dir).y) == 1)
         {
             highlightUp = new Vector3(0, 0, 1);
             highlightRight = new Vector3(1, 0, 0);
         }
-        else if (Mathf.RoundToInt(vec3Abs(dir).z) == 1)
+        else if (Mathf.RoundToInt(Vec3Abs(dir).z) == 1)
         {
             highlightUp = new Vector3(0, 1, 0);
             highlightRight = new Vector3(1, 0, 0);
@@ -394,7 +392,7 @@ public class VoxelMover : MonoBehaviour
         else
             sliceDir = highlightRight;
 
-        _cubeSize = vs.CubeSize;
+        _cubeSize = _vs.CubeSize;
 
         for (var i = 0; i < _cubeSize + 1; i++)
             if (FindVoxelByPos(_highlightedVoxel - sliceDir * i) == null)
@@ -407,21 +405,21 @@ public class VoxelMover : MonoBehaviour
             PushRow(_highlightedVoxel + sliceDir * i, dir, true);
     }
 
-    private Vector3 floorVec3ToInt(Vector3 in_vec)
+    private Vector3 FloorVec3ToInt(Vector3 inVec)
     {
         return new Vector3(
-            Mathf.FloorToInt(in_vec.x),
-            Mathf.FloorToInt(in_vec.y),
-            Mathf.FloorToInt(in_vec.z)
+            Mathf.FloorToInt(inVec.x),
+            Mathf.FloorToInt(inVec.y),
+            Mathf.FloorToInt(inVec.z)
         );
     }
 
-    private Vector3 vec3Abs(Vector3 in_vec)
+    private Vector3 Vec3Abs(Vector3 inVec)
     {
         return new Vector3(
-            Mathf.Abs(in_vec.x),
-            Mathf.Abs(in_vec.y),
-            Mathf.Abs(in_vec.z)
+            Mathf.Abs(inVec.x),
+            Mathf.Abs(inVec.y),
+            Mathf.Abs(inVec.z)
         );
     }
 
@@ -438,7 +436,7 @@ public class VoxelMover : MonoBehaviour
 
         try
         {
-            return vs.VoxelArray[Mathf.RoundToInt(pos.x),
+            return _vs.VoxelArray[Mathf.RoundToInt(pos.x),
                     Mathf.RoundToInt(pos.y),
                     Mathf.RoundToInt(pos.z)]
                 .transform;
@@ -462,9 +460,9 @@ public class VoxelMover : MonoBehaviour
         if (transform.GetChild(randVoxel).tag == "Voxel")
             PushRow(
                 transform.GetChild(randVoxel).localPosition,
-                directionArray[Random.Range(
+                _directionArray[Random.Range(
                     0,
-                    directionArray.Length - 1
+                    _directionArray.Length - 1
                 )],
                 end
             );

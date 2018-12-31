@@ -4,6 +4,7 @@ using UnityEngine.Serialization;
 public class CutOnClick : MonoBehaviour
 {
     [SerializeField] [FormerlySerializedAs("forward")]
+    // ReSharper disable once ConvertToConstant.Local
     private readonly bool _forward = true;
 
     private VoxelMover _cube;

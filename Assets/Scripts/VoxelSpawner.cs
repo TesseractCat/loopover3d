@@ -6,19 +6,24 @@ using UnityEngine.UI;
 public class VoxelSpawner : MonoBehaviour
 {
     [SerializeField] [FormerlySerializedAs("cubeSizeInput")]
-    private readonly InputField _cubeSizeInput = null;
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private InputField _cubeSizeInput = null;
 
     [SerializeField] [FormerlySerializedAs("noduleOffset")]
-    private readonly float _noduleOffset = 0.2f;
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private float _noduleOffset = 0.2f;
 
     [SerializeField] [FormerlySerializedAs("nodulePrefab")]
-    private readonly GameObject _nodulePrefab = null;
-
-    [SerializeField] [FormerlySerializedAs("voxelPrefab")]
-    private readonly GameObject _voxelPrefab = null;
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private GameObject _nodulePrefab = null;
 
     [SerializeField] [FormerlySerializedAs("textures")]
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
     private Texture2D[] _textures;
+
+    [SerializeField] [FormerlySerializedAs("voxelPrefab")]
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    private GameObject _voxelPrefab = null;
 
     public int CubeSize;
 
@@ -142,14 +147,14 @@ public class VoxelSpawner : MonoBehaviour
         transform.position = -center.transform.position;
         Destroy(center);
 
-        GetComponent<VoxelMover>().base64MoveEncode = "";
+        GetComponent<VoxelMover>().Base64MoveEncode = "";
     }
 
     public void ResetCube()
     {
         GetComponent<VoxelMover>().TimeDisplay.text = "Time: 0";
         GetComponent<VoxelMover>().MovesDisplay.text = "Moves: 0";
-        GetComponent<VoxelMover>().MPSDisplay.text = "MPS: 0";
+        GetComponent<VoxelMover>().MpsDisplay.text = "MPS: 0";
         GetComponent<VoxelMover>().Restart();
         transform.localScale = Vector3.one;
         transform.position = Vector3.zero;

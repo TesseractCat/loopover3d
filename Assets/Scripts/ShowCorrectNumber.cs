@@ -2,14 +2,8 @@
 
 public class ShowCorrectNumber : MonoBehaviour
 {
-    private VoxelSpawner _cube;
     private bool _showingNumber;
     public int CorrectNumber;
-
-    private void Start()
-    {
-        _cube = FindObjectOfType<VoxelSpawner>();
-    }
 
     private void Update()
     {

@@ -22,11 +22,11 @@ public class ChangeColorOnHover : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.transform.gameObject.GetInstanceID() ==
-                gameObject.GetInstanceID())
-                _lerpToColor = ToColor;
-            else
-                _lerpToColor = _startColor;
+            var hitId = hit.transform.gameObject.GetInstanceID();
+            _lerpToColor
+                = hitId == gameObject.GetInstanceID()
+                ? ToColor
+                : _startColor;
         }
         else
         {

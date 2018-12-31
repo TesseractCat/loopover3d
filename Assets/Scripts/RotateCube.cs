@@ -4,20 +4,22 @@ using UnityEngine.Serialization;
 public class RotateCube : MonoBehaviour
 {
     [SerializeField] [FormerlySerializedAs("mouseSensitivity")]
+    // ReSharper disable once ConvertToConstant.Local
     private readonly float _mouseSensitivity = 1f;
 
     [SerializeField] [FormerlySerializedAs("scrollWheelSensitivity")]
+    // ReSharper disable once ConvertToConstant.Local
     private readonly float _scrollWheelSensitivity = 1f;
 
-    private Vector3 lastPos = Vector3.zero;
+    private Vector3 _lastPos = Vector3.zero;
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(1)) lastPos = Input.mousePosition;
+        if (Input.GetMouseButtonDown(1)) _lastPos = Input.mousePosition;
 
         if (Input.GetMouseButton(1))
         {
-            var mouseOffset = Input.mousePosition - lastPos;
+            var mouseOffset = Input.mousePosition - _lastPos;
             transform.RotateAround(
                 Vector3.zero,
                 Vector3.right,
@@ -37,6 +39,6 @@ public class RotateCube : MonoBehaviour
                 Input.GetAxis("Mouse ScrollWheel") * _scrollWheelSensitivity
             );
 
-        lastPos = Input.mousePosition;
+        _lastPos = Input.mousePosition;
     }
 }
