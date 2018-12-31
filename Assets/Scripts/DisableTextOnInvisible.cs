@@ -1,17 +1,16 @@
 ﻿using UnityEngine;
 
 public class DisableTextOnInvisible : MonoBehaviour {
-
-    VoxelSpawner cube;
+    private VoxelSpawner _cube;
 
     void Start()
     {
-        cube = FindObjectOfType<VoxelSpawner>();
+        _cube = FindObjectOfType<VoxelSpawner>();
     }
 
     void Update () {
         
-        Vector3 realPos = transform.parent.parent.localPosition - new Vector3(-(cube.cubeSize / 2f) + 0.5f, -(cube.cubeSize / 2f) + 0.5f, -(cube.cubeSize / 2f) + 0.5f);
+        Vector3 realPos = transform.parent.parent.localPosition - new Vector3(-(_cube.cubeSize / 2f) + 0.5f, -(_cube.cubeSize / 2f) + 0.5f, -(_cube.cubeSize / 2f) + 0.5f);
         if (realPos.x * realPos.y * realPos.z == 0)
         {
             GetComponent<MeshRenderer>().enabled = true;

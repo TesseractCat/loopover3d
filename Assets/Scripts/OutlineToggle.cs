@@ -2,12 +2,12 @@
 
 public class OutlineToggle : MonoBehaviour {
 
-    bool outlineEnabled = true;
+    private bool _outlineEnabled = true;
 
     public void ToggleOutlines()
     {
-        outlineEnabled = !outlineEnabled;
-        if (outlineEnabled)
+        _outlineEnabled = !_outlineEnabled;
+        if (_outlineEnabled)
         {
             FindObjectOfType<SetVoxelProperties>().GetComponent<Renderer>().sharedMaterial.SetFloat("_FirstOutlineWidth", 0.02f);
         } else

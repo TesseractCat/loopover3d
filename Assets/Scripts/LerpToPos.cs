@@ -1,29 +1,27 @@
 ﻿using UnityEngine;
 
 public class LerpToPos : MonoBehaviour {
-
-    bool lerping = false;
-    Vector3 newPos;
-    float lerpSpeed;
+    private bool _lerping = false;
+    private Vector3 _newPos;
+    private float _lerpSpeed;
 
     void Update()
     {
-        if (lerping)
+        if (_lerping)
         {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, newPos, Time.deltaTime * lerpSpeed);
+            transform.localPosition = Vector3.Lerp(transform.localPosition, _newPos, Time.deltaTime * _lerpSpeed);
         }
-        if (Mathf.Abs(transform.localPosition.magnitude - newPos.magnitude) < 0.1f)
+        if (Mathf.Abs(transform.localPosition.magnitude - _newPos.magnitude) < 0.1f)
         {
-            lerping = false;
-            transform.localPosition = newPos;
+            _lerping = false;
+            transform.localPosition = _newPos;
         }
     }
 
     public void MoveToPos(Vector3 pos, float speed)
     {
-        lerpSpeed = speed;
-        newPos = pos;
-        lerping = true;
+        _lerpSpeed = speed;
+        _newPos = pos;
+        _lerping = true;
     }
-
 }

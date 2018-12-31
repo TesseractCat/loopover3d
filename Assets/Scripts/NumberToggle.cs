@@ -3,13 +3,12 @@ using UnityEngine;
 
 public class NumberToggle : MonoBehaviour
 {
-
-    public bool numberEnabled = true;
+    public bool NumberEnabled = true;
 
     public void ToggleNumbers()
     {
-        numberEnabled = !numberEnabled;
-        if (numberEnabled)
+        NumberEnabled = !NumberEnabled;
+        if (NumberEnabled)
         {
             SetVoxelProperties[] voxels = FindObjectsOfType<SetVoxelProperties>();
             new List<SetVoxelProperties>(voxels).ForEach((System.Action<SetVoxelProperties>)((v) =>

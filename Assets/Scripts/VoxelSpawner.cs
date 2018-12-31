@@ -47,7 +47,7 @@ public class VoxelSpawner : MonoBehaviour {
                     if (numVoxel <= 999)
                     {
                         tempVoxel.GetComponentInChildren<SetVoxelProperties>().SetNumber(numVoxel, true);
-                        tempVoxel.GetComponentInChildren<ShowCorrectNumber>().correctNumber = numVoxel;
+                        tempVoxel.GetComponentInChildren<ShowCorrectNumber>().CorrectNumber = numVoxel;
                     }
                     //tempVoxel.GetComponentInChildren<SetVoxelProperties>().SetColor(new Color(xi / cubeSize + 0.1f, yi / cubeSize + 0.1f, zi / cubeSize + 0.1f, 1f));
                     //renderer.material = new Material(renderer.material);

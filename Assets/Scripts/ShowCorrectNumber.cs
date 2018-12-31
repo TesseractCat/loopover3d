@@ -1,25 +1,24 @@
 ﻿using UnityEngine;
 
 public class ShowCorrectNumber : MonoBehaviour {
-
-    VoxelSpawner cube;
-    public int correctNumber;
-    bool showingNumber = false;
+    private VoxelSpawner _cube;
+    public int CorrectNumber;
+    private bool _showingNumber = false;
 
     void Start()
     {
-        cube = FindObjectOfType<VoxelSpawner>();
+        _cube = FindObjectOfType<VoxelSpawner>();
     }
 
     void Update () {
-		if ((Input.GetKeyDown(KeyCode.E) && !Input.GetMouseButton(2)) || (Input.GetMouseButtonDown(2) && !Input.GetKey(KeyCode.E)) && !showingNumber)
+		if ((Input.GetKeyDown(KeyCode.E) && !Input.GetMouseButton(2)) || (Input.GetMouseButtonDown(2) && !Input.GetKey(KeyCode.E)) && !_showingNumber)
         {
-            showingNumber = true;
-            GetComponent<SetVoxelProperties>().DisplayNumber(correctNumber);
+            _showingNumber = true;
+            GetComponent<SetVoxelProperties>().DisplayNumber(CorrectNumber);
         }
         if (Input.GetKeyUp(KeyCode.E) || Input.GetMouseButtonUp(2))
         {
-            showingNumber = false;
+            _showingNumber = false;
             GetComponent<SetVoxelProperties>().Redraw();
         }
 	}

@@ -18,7 +18,7 @@ public class SetVoxelProperties : MonoBehaviour {
 
     void Awake()
     {
-        ShowNumber = FindObjectOfType<NumberToggle>().numberEnabled;
+        ShowNumber = FindObjectOfType<NumberToggle>().NumberEnabled;
         _cube = FindObjectOfType<VoxelSpawner>();
         _renderer = GetComponent<Renderer>();
         _propBlock = new MaterialPropertyBlock();
