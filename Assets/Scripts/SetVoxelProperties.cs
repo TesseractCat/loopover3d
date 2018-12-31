@@ -1,86 +1,91 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class SetVoxelProperties : MonoBehaviour {
 
-    VoxelSpawner cube;
-    MaterialPropertyBlock propBlock;
-    Renderer renderer;
-    public Color color = Color.black;
-    public int number = 1;
-    public bool transparent = false;
-    float colorBrightness = 0.1f;
-    public bool showNumber = true;
+    private VoxelSpawner _cube;
+    private MaterialPropertyBlock _propBlock;
+    private Renderer _renderer;
+    private Color color = Color.black;
+    [SerializeField, FormerlySerializedAs("colorBrightness")]
+    private float _colorBrightness = 0.1f;
+    [HideInInspector]
+    public int Number = 1;
+    [HideInInspector]
+    public bool Transparent = false;
+    [HideInInspector]
+    public bool ShowNumber = true;
 
     void Awake()
     {
-        showNumber = FindObjectOfType<NumberToggle>().numberEnabled;
-        cube = FindObjectOfType<VoxelSpawner>();
-        renderer = GetComponent<Renderer>();
-        propBlock = new MaterialPropertyBlock();
+        ShowNumber = FindObjectOfType<NumberToggle>().numberEnabled;
+        _cube = FindObjectOfType<VoxelSpawner>();
+        _renderer = GetComponent<Renderer>();
+        _propBlock = new MaterialPropertyBlock();
     }
     
 	public void SetColor(Color newColor)
     {
         color = newColor;
-        propBlock.SetColor("_Color", color);
-        propBlock.SetColor("_EmissionColor", NumberToColor(number));
-        propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>(number.ToString()));
-        renderer.SetPropertyBlock(propBlock);
+        _propBlock.SetColor("_Color", color);
+        _propBlock.SetColor("_EmissionColor", NumberToColor(Number));
+        _propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>(Number.ToString()));
+        _renderer.SetPropertyBlock(_propBlock);
     }
 
     public void SetNumber(int newNumber, bool doRedraw)
     {
-        number = newNumber;
+        Number = newNumber;
         if (doRedraw)
         {
-            propBlock.SetColor("_Color", NumberToColor(newNumber));
-            propBlock.SetColor("_EmissionColor", NumberToColor(newNumber));
-            propBlock.SetColor("_FirstOutlineColor", OutlineColor());
-            if (showNumber)
+            _propBlock.SetColor("_Color", NumberToColor(newNumber));
+            _propBlock.SetColor("_EmissionColor", NumberToColor(newNumber));
+            _propBlock.SetColor("_FirstOutlineColor", OutlineColor());
+            if (ShowNumber)
             {
-                propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>(number.ToString()));
+                _propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>(Number.ToString()));
             } else
             {
-                propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>("blank"));
+                _propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>("blank"));
             }
-            renderer.SetPropertyBlock(propBlock);
+            _renderer.SetPropertyBlock(_propBlock);
         }
     }
 
-    public void ShowNumber(int displayNumber)
+    public void DisplayNumber(int displayNumber)
     {
-        propBlock.SetColor("_Color", NumberToColor(number));
-        propBlock.SetColor("_EmissionColor", NumberToColor(number));
-        propBlock.SetColor("_FirstOutlineColor", OutlineColor());
-        propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>(displayNumber.ToString()));
-        renderer.SetPropertyBlock(propBlock);
+        _propBlock.SetColor("_Color", NumberToColor(Number));
+        _propBlock.SetColor("_EmissionColor", NumberToColor(Number));
+        _propBlock.SetColor("_FirstOutlineColor", OutlineColor());
+        _propBlock.SetTexture("_MainTex", Resources.Load<Texture2D>(displayNumber.ToString()));
+        _renderer.SetPropertyBlock(_propBlock);
     }
 
     public void Redraw()
     {
-        SetNumber(number, true);
+        SetNumber(Number, true);
     }
 
     Color NumberToColor(int num)
     {
         int numVoxel = 0;
-        for (float xi = 0; xi < cube.cubeSize; xi++)
+        for (float xi = 0; xi < _cube.cubeSize; xi++)
         {
-            for (float yi = 0; yi < cube.cubeSize; yi++)
+            for (float yi = 0; yi < _cube.cubeSize; yi++)
             {
-                for (float zi = 0; zi < cube.cubeSize; zi++)
+                for (float zi = 0; zi < _cube.cubeSize; zi++)
                 {
                     numVoxel += 1;
                     if (num == numVoxel)
                     {
-                        if (!transparent)
+                        if (!Transparent)
                         {
-                            return new Color(xi / cube.cubeSize + colorBrightness, yi / cube.cubeSize + colorBrightness, zi / cube.cubeSize + colorBrightness, 1f);
+                            return new Color(xi / _cube.cubeSize + _colorBrightness, yi / _cube.cubeSize + _colorBrightness, zi / _cube.cubeSize + _colorBrightness, 1f);
                         } else
                         {
-                            return new Color(xi / cube.cubeSize + colorBrightness, yi / cube.cubeSize + colorBrightness, zi / cube.cubeSize + colorBrightness, 0.025f);
+                            return new Color(xi / _cube.cubeSize + _colorBrightness, yi / _cube.cubeSize + _colorBrightness, zi / _cube.cubeSize + _colorBrightness, 0.025f);
                         }
                     }
                 }
@@ -91,7 +96,7 @@ public class SetVoxelProperties : MonoBehaviour {
 
     Color OutlineColor()
     {
-        if (transparent)
+        if (Transparent)
         {
             return new Color(0, 0, 0, 0);
         } else

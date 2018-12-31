@@ -141,7 +141,7 @@ public class VoxelMover : MonoBehaviour {
                 {
                     for (int zi = 0; zi < cubeSize; zi++)
                     {
-                        if (vs.voxelArray[xi, yi, zi].number != vs.correctNumberArray[xi, yi, zi])
+                        if (vs.voxelArray[xi, yi, zi].Number != vs.correctNumberArray[xi, yi, zi])
                         {
                             stopTimer = false;
                         }
@@ -244,7 +244,7 @@ public class VoxelMover : MonoBehaviour {
                         continue;
                     }
 
-                    if (beforeVoxel.transparent)
+                    if (beforeVoxel.Transparent)
                     {
                         objectsToDeactivate.Add(vs.voxelArray[xi, yi, zi]);
                     }
@@ -254,7 +254,7 @@ public class VoxelMover : MonoBehaviour {
         objectsToDeactivate.ForEach((Obj) =>
         {
             Obj.transform.parent.GetComponent<Collider>().enabled = false;
-            Obj.transparent = true;
+            Obj.Transparent = true;
             Obj.Redraw();
         });
 
@@ -285,7 +285,7 @@ public class VoxelMover : MonoBehaviour {
                         continue;
                     }
 
-                    if (!beforeVoxel.transparent)
+                    if (!beforeVoxel.Transparent)
                     {
                         objectsToActivate.Add(vs.voxelArray[xi, yi, zi]);
                     }
@@ -295,7 +295,7 @@ public class VoxelMover : MonoBehaviour {
         objectsToActivate.ForEach((Obj) =>
         {
             Obj.transform.parent.GetComponent<Collider>().enabled = true;
-            Obj.transparent = false;
+            Obj.Transparent = false;
             Obj.Redraw();
         });
 
@@ -327,7 +327,7 @@ public class VoxelMover : MonoBehaviour {
         for (int i = 0; i < cubeSize; i++)
         {
             Vector3 pos = (touched + (dir * i));
-            tempNumArray.Add(vs.voxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].number);
+            tempNumArray.Add(vs.voxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].Number);
             //Debug.Log(tempNumArray[tempNumArray.Count - 1]);
         }
         for (int i = 0; i < cubeSize; i++)

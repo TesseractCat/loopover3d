@@ -17,7 +17,7 @@ public class ShowCorrectNumber : MonoBehaviour {
 		if ((Input.GetKeyDown(KeyCode.E) && !Input.GetMouseButton(2)) || (Input.GetMouseButtonDown(2) && !Input.GetKey(KeyCode.E)) && !showingNumber)
         {
             showingNumber = true;
-            GetComponent<SetVoxelProperties>().ShowNumber(correctNumber);
+            GetComponent<SetVoxelProperties>().DisplayNumber(correctNumber);
         }
         if (Input.GetKeyUp(KeyCode.E) || Input.GetMouseButtonUp(2))
         {

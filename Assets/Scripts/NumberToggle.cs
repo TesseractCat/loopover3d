@@ -14,20 +14,20 @@ public class NumberToggle : MonoBehaviour
         if (numberEnabled)
         {
             SetVoxelProperties[] voxels = FindObjectsOfType<SetVoxelProperties>();
-            new List<SetVoxelProperties>(voxels).ForEach((v) =>
+            new List<SetVoxelProperties>(voxels).ForEach((System.Action<SetVoxelProperties>)((v) =>
             {
-                v.showNumber = true;
+                v.ShowNumber = true;
                 v.Redraw();
-            });
+            }));
         }
         else
         {
             SetVoxelProperties[] voxels = FindObjectsOfType<SetVoxelProperties>();
-            new List<SetVoxelProperties>(voxels).ForEach((v) =>
+            new List<SetVoxelProperties>(voxels).ForEach((System.Action<SetVoxelProperties>)((v) =>
             {
-                v.showNumber = false;
+                v.ShowNumber = false;
                 v.Redraw();
-            });
+            }));
         }
     }
 
