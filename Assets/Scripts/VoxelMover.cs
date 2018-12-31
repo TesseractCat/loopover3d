@@ -80,7 +80,7 @@ public class VoxelMover : MonoBehaviour {
 
         if (_voxelHighlighter.activeSelf && Input.GetMouseButtonDown(0))
         {
-            _cubeSize = vs.cubeSize;
+            _cubeSize = vs.CubeSize;
             for (int c = 0; c < transform.childCount; c++)
             {
                 if (transform.GetChild(c).tag == "Moved")
@@ -142,7 +142,7 @@ public class VoxelMover : MonoBehaviour {
                 {
                     for (int zi = 0; zi < _cubeSize; zi++)
                     {
-                        if (vs.voxelArray[xi, yi, zi].Number != vs.correctNumberArray[xi, yi, zi])
+                        if (vs.VoxelArray[xi, yi, zi].Number != vs.CorrectNumberArray[xi, yi, zi])
                         {
                             stopTimer = false;
                         }
@@ -221,7 +221,7 @@ public class VoxelMover : MonoBehaviour {
     public void CutForward(Vector3 dir)
     {
         _currentCutDir = dir;
-        _cubeSize = vs.cubeSize;
+        _cubeSize = vs.CubeSize;
         if (AmountCut == ((int)_cubeSize - 1))
         {
             return;
@@ -237,17 +237,17 @@ public class VoxelMover : MonoBehaviour {
                     SetVoxelProperties beforeVoxel = null;
                     try
                     {
-                        beforeVoxel = vs.voxelArray[xi - Mathf.RoundToInt(dir.x), yi - Mathf.RoundToInt(dir.y), zi - Mathf.RoundToInt(dir.z)];
+                        beforeVoxel = vs.VoxelArray[xi - Mathf.RoundToInt(dir.x), yi - Mathf.RoundToInt(dir.y), zi - Mathf.RoundToInt(dir.z)];
                     }
                     catch
                     {
-                        objectsToDeactivate.Add(vs.voxelArray[xi, yi, zi]);
+                        objectsToDeactivate.Add(vs.VoxelArray[xi, yi, zi]);
                         continue;
                     }
 
                     if (beforeVoxel.Transparent)
                     {
-                        objectsToDeactivate.Add(vs.voxelArray[xi, yi, zi]);
+                        objectsToDeactivate.Add(vs.VoxelArray[xi, yi, zi]);
                     }
                 }
             }
@@ -280,7 +280,7 @@ public class VoxelMover : MonoBehaviour {
                     SetVoxelProperties beforeVoxel = null;
                     try
                     {
-                        beforeVoxel = vs.voxelArray[xi + Mathf.RoundToInt(dir.x), yi + Mathf.RoundToInt(dir.y), zi + Mathf.RoundToInt(dir.z)];
+                        beforeVoxel = vs.VoxelArray[xi + Mathf.RoundToInt(dir.x), yi + Mathf.RoundToInt(dir.y), zi + Mathf.RoundToInt(dir.z)];
                     } catch
                     {
                         continue;
@@ -288,7 +288,7 @@ public class VoxelMover : MonoBehaviour {
 
                     if (!beforeVoxel.Transparent)
                     {
-                        objectsToActivate.Add(vs.voxelArray[xi, yi, zi]);
+                        objectsToActivate.Add(vs.VoxelArray[xi, yi, zi]);
                     }
                 }
             }
@@ -304,7 +304,7 @@ public class VoxelMover : MonoBehaviour {
 
         if (AmountCut == 0 && resetNodulesOnZero)
         {
-            GetComponent<VoxelSpawner>().nodules.ForEach((n) =>
+            GetComponent<VoxelSpawner>().Nodules.ForEach((n) =>
             {
                 n.SetActive(true);
             });
@@ -313,7 +313,7 @@ public class VoxelMover : MonoBehaviour {
 
     void PushRow(Vector3 touched, Vector3 dir, bool fancy)
     {
-        _cubeSize = vs.cubeSize;
+        _cubeSize = vs.CubeSize;
 
         for (int i = 0; i < _cubeSize + 1; i++)
         {
@@ -328,7 +328,7 @@ public class VoxelMover : MonoBehaviour {
         for (int i = 0; i < _cubeSize; i++)
         {
             Vector3 pos = (touched + (dir * i));
-            tempNumArray.Add(vs.voxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].Number);
+            tempNumArray.Add(vs.VoxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].Number);
             //Debug.Log(tempNumArray[tempNumArray.Count - 1]);
         }
         for (int i = 0; i < _cubeSize; i++)
@@ -336,10 +336,10 @@ public class VoxelMover : MonoBehaviour {
             Vector3 pos = (touched + (dir * i));
             if (i == 0)
             {
-                vs.voxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].SetNumber(tempNumArray[tempNumArray.Count-1], fancy);
+                vs.VoxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].SetNumber(tempNumArray[tempNumArray.Count-1], fancy);
             } else
             {
-                vs.voxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].SetNumber(tempNumArray[i-1], fancy);
+                vs.VoxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].SetNumber(tempNumArray[i-1], fancy);
             }
         }
 
@@ -384,7 +384,7 @@ public class VoxelMover : MonoBehaviour {
             sliceDir = highlightRight;
         }
 
-        _cubeSize = vs.cubeSize;
+        _cubeSize = vs.CubeSize;
 
         for (int i = 0; i < _cubeSize + 1; i++)
         {
@@ -424,7 +424,7 @@ public class VoxelMover : MonoBehaviour {
 
         try
         {
-            return vs.voxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].transform;
+            return vs.VoxelArray[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)].transform;
         } catch
         {
             return null;

@@ -69,21 +69,21 @@ public class SetVoxelProperties : MonoBehaviour {
     Color NumberToColor(int num)
     {
         int numVoxel = 0;
-        for (float xi = 0; xi < _cube.cubeSize; xi++)
+        for (float xi = 0; xi < _cube.CubeSize; xi++)
         {
-            for (float yi = 0; yi < _cube.cubeSize; yi++)
+            for (float yi = 0; yi < _cube.CubeSize; yi++)
             {
-                for (float zi = 0; zi < _cube.cubeSize; zi++)
+                for (float zi = 0; zi < _cube.CubeSize; zi++)
                 {
                     numVoxel += 1;
                     if (num == numVoxel)
                     {
                         if (!Transparent)
                         {
-                            return new Color(xi / _cube.cubeSize + _colorBrightness, yi / _cube.cubeSize + _colorBrightness, zi / _cube.cubeSize + _colorBrightness, 1f);
+                            return new Color(xi / _cube.CubeSize + _colorBrightness, yi / _cube.CubeSize + _colorBrightness, zi / _cube.CubeSize + _colorBrightness, 1f);
                         } else
                         {
-                            return new Color(xi / _cube.cubeSize + _colorBrightness, yi / _cube.cubeSize + _colorBrightness, zi / _cube.cubeSize + _colorBrightness, 0.025f);
+                            return new Color(xi / _cube.CubeSize + _colorBrightness, yi / _cube.CubeSize + _colorBrightness, zi / _cube.CubeSize + _colorBrightness, 0.025f);
                         }
                     }
                 }

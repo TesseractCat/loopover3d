@@ -10,7 +10,7 @@ public class DisableTextOnInvisible : MonoBehaviour {
 
     void Update () {
         
-        Vector3 realPos = transform.parent.parent.localPosition - new Vector3(-(_cube.cubeSize / 2f) + 0.5f, -(_cube.cubeSize / 2f) + 0.5f, -(_cube.cubeSize / 2f) + 0.5f);
+        Vector3 realPos = transform.parent.parent.localPosition - new Vector3(-(_cube.CubeSize / 2f) + 0.5f, -(_cube.CubeSize / 2f) + 0.5f, -(_cube.CubeSize / 2f) + 0.5f);
         if (realPos.x * realPos.y * realPos.z == 0)
         {
             GetComponent<MeshRenderer>().enabled = true;

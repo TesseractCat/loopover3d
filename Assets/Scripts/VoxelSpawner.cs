@@ -1,47 +1,50 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class VoxelSpawner : MonoBehaviour {
 
-    public GameObject voxelPrefab;
-    public GameObject nodulePrefab;
-    public InputField cubeSizeInput;
+    [SerializeField, FormerlySerializedAs("voxelPrefab")]
+    private GameObject _voxelPrefab = null;
+    [SerializeField, FormerlySerializedAs("nodulePrefab")]
+    private GameObject _nodulePrefab = null;
+    [SerializeField, FormerlySerializedAs("cubeSizeInput")]
+    private InputField _cubeSizeInput = null;
 
-    public float noduleOffset = 0.2f;
+    [SerializeField, FormerlySerializedAs("noduleOffset")]
+    private float _noduleOffset = 0.2f;
 
     //Why is this a float ???
-    public float cubeSize;
+    public float CubeSize;
 
-    public List<GameObject> nodules;
+    public List<GameObject> Nodules;
 
-    public Texture2D[] textures;
+    [SerializeField, FormerlySerializedAs("textures")]
+    private Texture2D[] _textures;
 
-    public SetVoxelProperties[,,] voxelArray;
-    public int[,,] correctNumberArray;
+    public SetVoxelProperties[,,] VoxelArray;
+    public int[,,] CorrectNumberArray { get; private set; }
 
     void Start ()
     {
-        //QualitySettings.vSyncCount = 0;  // VSync must be disabled
-        //Application.targetFrameRate = 20;
+        CubeSize = int.Parse(_cubeSizeInput.text);
 
-        cubeSize = int.Parse(cubeSizeInput.text);
-
-        voxelArray = new SetVoxelProperties[(int)cubeSize, (int)cubeSize, (int)cubeSize];
-        correctNumberArray = new int[(int)cubeSize, (int)cubeSize, (int)cubeSize];
+        VoxelArray = new SetVoxelProperties[(int)CubeSize, (int)CubeSize, (int)CubeSize];
+        CorrectNumberArray = new int[(int)CubeSize, (int)CubeSize, (int)CubeSize];
 
         int numVoxel = 0;
-        for (float xi = 0; xi < cubeSize; xi++)
+        for (float xi = 0; xi < CubeSize; xi++)
         {
-            for (float yi = 0; yi < cubeSize; yi++)
+            for (float yi = 0; yi < CubeSize; yi++)
             {
-                for (float zi = 0; zi < cubeSize; zi++)
+                for (float zi = 0; zi < CubeSize; zi++)
                 {
                     numVoxel += 1;
-                    GameObject tempVoxel = Instantiate(voxelPrefab, new Vector3(xi, yi, zi), Quaternion.identity, transform);
+                    GameObject tempVoxel = Instantiate(_voxelPrefab, new Vector3(xi, yi, zi), Quaternion.identity, transform);
                     tempVoxel.transform.localPosition = tempVoxel.transform.localPosition;
-                    voxelArray[(int)xi, (int)yi, (int)zi] = tempVoxel.GetComponentInChildren<SetVoxelProperties>();
-                    correctNumberArray[(int)xi, (int)yi, (int)zi] = numVoxel;
+                    VoxelArray[(int)xi, (int)yi, (int)zi] = tempVoxel.GetComponentInChildren<SetVoxelProperties>();
+                    CorrectNumberArray[(int)xi, (int)yi, (int)zi] = numVoxel;
 
                     //Instanced colors
                     if (numVoxel <= 999)
@@ -59,21 +62,21 @@ public class VoxelSpawner : MonoBehaviour {
             }
         }
 
-        nodules = new List<GameObject>();
+        Nodules = new List<GameObject>();
 
-        nodules.Add((GameObject)Instantiate(nodulePrefab, new Vector3(0, -1 - noduleOffset, 0), Quaternion.identity, transform));
-        nodules.Add((GameObject)Instantiate(nodulePrefab, new Vector3(-1 - noduleOffset, 0, 0), Quaternion.Euler(0,0,-90), transform));
-        nodules.Add((GameObject)Instantiate(nodulePrefab, new Vector3(0, 0, -1 - noduleOffset), Quaternion.Euler(90, 0, 0), transform));
+        Nodules.Add((GameObject)Instantiate(_nodulePrefab, new Vector3(0, -1 - _noduleOffset, 0), Quaternion.identity, transform));
+        Nodules.Add((GameObject)Instantiate(_nodulePrefab, new Vector3(-1 - _noduleOffset, 0, 0), Quaternion.Euler(0,0,-90), transform));
+        Nodules.Add((GameObject)Instantiate(_nodulePrefab, new Vector3(0, 0, -1 - _noduleOffset), Quaternion.Euler(90, 0, 0), transform));
 
-        nodules.Add((GameObject)Instantiate(nodulePrefab, new Vector3(cubeSize - 1, cubeSize + noduleOffset, cubeSize - 1), Quaternion.Euler(180, 0, 0), transform));
-        nodules.Add((GameObject)Instantiate(nodulePrefab, new Vector3(cubeSize + noduleOffset, cubeSize - 1, cubeSize - 1), Quaternion.Euler(0, 0, 90), transform));
-        nodules.Add((GameObject)Instantiate(nodulePrefab, new Vector3(cubeSize - 1, cubeSize - 1, cubeSize + noduleOffset), Quaternion.Euler(-90, 0, 0), transform));
+        Nodules.Add((GameObject)Instantiate(_nodulePrefab, new Vector3(CubeSize - 1, CubeSize + _noduleOffset, CubeSize - 1), Quaternion.Euler(180, 0, 0), transform));
+        Nodules.Add((GameObject)Instantiate(_nodulePrefab, new Vector3(CubeSize + _noduleOffset, CubeSize - 1, CubeSize - 1), Quaternion.Euler(0, 0, 90), transform));
+        Nodules.Add((GameObject)Instantiate(_nodulePrefab, new Vector3(CubeSize - 1, CubeSize - 1, CubeSize + _noduleOffset), Quaternion.Euler(-90, 0, 0), transform));
 
         //transform.position = new Vector3(-1f, -1f, -1f);
-        transform.localScale = new Vector3((1 / cubeSize) * 2.5f, (1 / cubeSize) * 2.5f, (1 / cubeSize) * 2.5f);
+        transform.localScale = new Vector3((1 / CubeSize) * 2.5f, (1 / CubeSize) * 2.5f, (1 / CubeSize) * 2.5f);
         GameObject center = new GameObject();
         center.transform.parent = transform;
-        center.transform.localPosition = new Vector3(cubeSize / 2 - 0.5f, cubeSize / 2 - 0.5f, cubeSize / 2 - 0.5f);
+        center.transform.localPosition = new Vector3(CubeSize / 2 - 0.5f, CubeSize / 2 - 0.5f, CubeSize / 2 - 0.5f);
         center.transform.parent = null;
         transform.position = -center.transform.position;
         Destroy(center);
